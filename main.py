@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import itertools
 import statistics
 
+from codecarbon import track_emissions
+
 from de_algorithm import run_differential_evolution
 
 
@@ -42,8 +44,8 @@ def get_result_and_plot(generations, m, data_config, F, CR, opposition, config_c
         "problem": data_config.get("problem")
     }
 
-
-if __name__ == "__main__":
+@track_emissions()
+def your_function_to_track():
     generations_list = [30]
     m_list = [100]
     data_config = {
@@ -96,9 +98,12 @@ if __name__ == "__main__":
     best_shubert = df[df["problem"] == "shubert"].sort_values(by="best_result").iloc[0]
     print('Melhor Shubert:')
     print(best_shubert.drop(columns=['mean_scores']))
+    best_shubert.to_csv('melhores_fitness_shubert_de.csv')
     best_camel = df[df["problem"] == "camel"].sort_values(by="best_result").iloc[0]
     print('Melhor Camel:')
     print(best_camel.drop(columns=['mean_scores']))
+    best_camel.to_csv('melhores_fitness_camel_de.csv')
+    
 
     # === Leitura dos dados do GA
     try:
@@ -136,3 +141,7 @@ if __name__ == "__main__":
         print("Arquivos 'melhores_fitness_shubert.csv' ou 'melhores_fitness_camel.csv' não encontrados para comparação com GA.")
 
     plt.show()
+
+if __name__ == "__main__":
+    your_function_to_track()
+    
